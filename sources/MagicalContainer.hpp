@@ -8,111 +8,167 @@
 namespace ariel
 {
     using namespace std;
+
     class MagicalContainer
     {
+    private:
+        vector<int> elements;
+        vector<const int *> asceindingElements;
+        vector<const int *> sideCrossElements;
+        vector<const int *> primeElements;
 
-    public:
-        // Iterator classes -  scending order.
-        class AscendingIterator
+        static vector<const int *> sortForSideCrossIterator(vector<int> containerElements)
         {
-        private:
-            MagicalContainer *container;
-            vector<int> sortedElements;
-            int *currElement;
+            std::sort(containerElements.begin(), containerElements.end()); 
 
-        public:
-            AscendingIterator(); // default costructor
-            AscendingIterator(MagicalContainer &container);// creating operator with container
-            AscendingIterator(const AscendingIterator &other);            // copy costructor
-            ~AscendingIterator();                                         // destructor
-            AscendingIterator &operator=(const AscendingIterator &other); // Assignment operator
-            bool operator==(const AscendingIterator &other) const;        // Equality comparison
-            bool operator!=(const AscendingIterator &other) const;        // Inequality comparison
-            bool operator<(const AscendingIterator &other) const;         // less-than
-            bool operator>(const AscendingIterator &other) const;         // greater-than
-            int &operator*();                                             // Dereference operator
-            AscendingIterator &operator++();                              // Pre-increment operator
-            vector<int>::iterator begin();                                // Iterator pointing to the first element
-            vector<int>::iterator end();                                  // Iterator pointing to the last element
-        };
+            size_t start = 0;
+            size_t end = containerElements.size() - 1;
 
-        // Iterator classes that allows traversal of elements in cross order.
-        class SideCrossIterator //
-        {
-        private:
-            vector<int> sortedElements;
-            MagicalContainer *container;
-            int *currElement;
+            std::vector<const int *> sortedVec(containerElements.size());
 
-        public:
-            SideCrossIterator();                                          // default costructor
-            SideCrossIterator(MagicalContainer &container);               // creating operator with container
-            SideCrossIterator(const SideCrossIterator &other);            // copy costructor
-            ~SideCrossIterator();                                         // destructor
-            SideCrossIterator &operator=(const SideCrossIterator &other); // Assignment operator
-            bool operator==(const SideCrossIterator &other) const;        // Equality comparison
-            bool operator!=(const SideCrossIterator &other) const;        // Inequality comparison
-            bool operator<(const SideCrossIterator &other) const;         // less-than
-            bool operator>(const SideCrossIterator &other) const;         // greater-than
-            int &operator*();                                             // Dereference operator
-            SideCrossIterator &operator++();                              // Pre-increment operator
-            vector<int>::iterator begin();                                // Iterator pointing to the first element
-            vector<int>::iterator end();                                  // Iterator pointing to the last element
-        };
-
-        // Iterator classes that allows traversal of elements in prime numbers only.
-        class PrimeIterator
-        {
-        private:
-            vector<int> primeElements;
-            MagicalContainer *container;
-            int *currElement;
-            static bool isPrime(int num) // basic prime checker
+            for (size_t i = 0; i < containerElements.size(); i++)
             {
-                double sqrtNum = sqrt(num);
-                for (int i = 2; i <= sqrtNum; i++)
+                if (i % 2 == 0)
                 {
-                    if (num % i == 0)
-                    {
-                        return false;
-                    }
+                    sortedVec[i] = &containerElements[start]; 
+                    start++;
                 }
+                else
+                {
+                    sortedVec[i] = &containerElements[end]; 
+                    end--;
+                }
+            }
+
+            return sortedVec;
+        }
+
+        static bool isPrime(int num)
+        {
+
+            if (num == 1)
+            {
+                return false;
+            }
+
+            if (num == 2)
+            {
                 return true;
             }
 
-        public:
-            PrimeIterator();                                      // default costructor
-            PrimeIterator(MagicalContainer &container);           // creating operator with container
-            PrimeIterator(const PrimeIterator &other);            // copy costructor
-            ~PrimeIterator();                                     // destructor
-            PrimeIterator &operator=(const PrimeIterator &other); // Assignment operator
-            bool operator==(const PrimeIterator &other) const;    // Equality comparison
-            bool operator!=(const PrimeIterator &other) const;    // Inequality comparison
-            bool operator<(const PrimeIterator &other) const;     // less-than
-            bool operator>(const PrimeIterator &other) const;     // greater-than
-            int &operator*();                                     // Dereference operator
-            PrimeIterator &operator++();                          // Pre-increment operator
-            vector<int>::iterator begin();                        // Iterator pointing to the first element
-            vector<int>::iterator end();                          // Iterator pointing to the last element
-        };
-        ///////////////////////Magic container class////////////////////////////////////////
-        vector<int> elements;
-        // Create the iterators
-        AscendingIterator ascendingIterator;
-        SideCrossIterator sideCrossIterator;
-        PrimeIterator primeIterator;
+            double sqrtNum = sqrt(num);
+            for (int i = 2; i <= sqrtNum; i++)
+            {
+                if (num % i == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
-        MagicalContainer();              // Magic container constructor
-        ~MagicalContainer();             // Magic container destructor
-        void addElement(int element);    // adding elements
-        void removeElement(int element); // removing elements
-        vector<int> getElements() const; // returns all elements
-        int size() const;                // retrieving the size of the container
-        AscendingIterator &getAscendingIterator();
-        SideCrossIterator &getSideCrossIterator();
-        PrimeIterator &getPrimeIterator();
+    public:
+        class AscendingIterator
+        {
+        private:
+            MagicalContainer &container;
+            size_t position;
+
+        public:
+            AscendingIterator(MagicalContainer &container);
+            AscendingIterator(const AscendingIterator &other);
+            ~AscendingIterator();
+            AscendingIterator &operator=(const AscendingIterator &other);
+            bool operator==(const AscendingIterator &other) const;
+            bool operator!=(const AscendingIterator &other) const;
+            bool operator<(const AscendingIterator &other) const;
+            bool operator>(const AscendingIterator &other) const;
+            int operator*();
+            AscendingIterator &operator++();
+            MagicalContainer::AscendingIterator begin();
+            MagicalContainer::AscendingIterator end();
+            AscendingIterator(AscendingIterator &&other) noexcept = default;
+            AscendingIterator &operator=(AscendingIterator &&other) noexcept = delete;
+        };
+
+        class SideCrossIterator
+        {
+        private:
+            MagicalContainer &container;
+            size_t position;
+
+        public:
+            SideCrossIterator(MagicalContainer &container);
+            SideCrossIterator(const SideCrossIterator &other);
+            ~SideCrossIterator();
+            SideCrossIterator &operator=(const SideCrossIterator &other);
+            bool operator==(const SideCrossIterator &other) const;
+            bool operator!=(const SideCrossIterator &other) const;
+            bool operator<(const SideCrossIterator &other) const;
+            bool operator>(const SideCrossIterator &other) const;
+            int operator*();
+            SideCrossIterator &operator++();
+            MagicalContainer::SideCrossIterator begin();
+            MagicalContainer::SideCrossIterator end();
+            SideCrossIterator(SideCrossIterator &&other) noexcept = default;
+            SideCrossIterator &operator=(SideCrossIterator &&other) noexcept = delete;
+        };
+
+        class PrimeIterator
+        {
+        private:
+            MagicalContainer &container;
+            size_t position;
+
+        public:
+            PrimeIterator(MagicalContainer &container);
+            PrimeIterator(const PrimeIterator &other);
+            ~PrimeIterator();
+            PrimeIterator &operator=(const PrimeIterator &other);
+            bool operator==(const PrimeIterator &other) const;
+            bool operator!=(const PrimeIterator &other) const;
+            bool operator<(const PrimeIterator &other) const;
+            bool operator>(const PrimeIterator &other) const;
+            int operator*();
+            PrimeIterator &operator++();
+            MagicalContainer::PrimeIterator begin();
+            MagicalContainer::PrimeIterator end();
+            PrimeIterator(PrimeIterator &&other) noexcept = default;
+            PrimeIterator &operator=(PrimeIterator &&other) noexcept = delete;
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        MagicalContainer();
+        ~MagicalContainer();
+        bool addElement(int element);
+        void removeElement(int element);
+        std::vector<int> getElements() const;
+        size_t size() const;
+        bool operator==(MagicalContainer &other);
+        bool operator!=(MagicalContainer &other);
+
         MagicalContainer(const MagicalContainer &other) = delete;
-        MagicalContainer &operator=(const MagicalContainer &other) = delete;
+        MagicalContainer &operator=(const MagicalContainer &other) = default;
+        MagicalContainer(MagicalContainer &&other) noexcept = delete;
+        MagicalContainer &operator=(MagicalContainer &&other) noexcept = delete;
+
+
     };
 }
 #endif
