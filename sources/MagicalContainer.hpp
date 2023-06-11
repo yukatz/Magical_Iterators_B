@@ -12,9 +12,9 @@ namespace ariel
     {
     private:
         vector<int> elements;
-        vector<const int *> asceindingElements;
-        vector<const int *> sideCrossElements;
-        vector<const int *> primeElements;
+        vector<int *> asceindingElements;
+        vector<int *> sideCrossElements;
+        vector<int *> primeElements;
 
     public:
         class AscendingIterator
@@ -90,10 +90,7 @@ namespace ariel
         size_t size() const;             // retrieving the size of the container
         bool operator==(MagicalContainer &other);
         bool operator!=(MagicalContainer &other);
-        MagicalContainer(const MagicalContainer &other) = delete;
         MagicalContainer &operator=(const MagicalContainer &other) = default;
-        MagicalContainer(MagicalContainer &&other) noexcept = delete;
-        MagicalContainer &operator=(MagicalContainer &&other) noexcept = delete;
         static bool isPrime(int num);
     };
 }
